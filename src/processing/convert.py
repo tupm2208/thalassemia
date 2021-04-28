@@ -27,18 +27,34 @@ def handle_label(df, l_names, obj):
 
     return len(intersection_columns) != 0
 
+def process_header(df):
+    target_lb = list(pattern.keys())
+
+    for idx, e in enumerate(df.columns.values):
+        for k in target_lb:
+            if k.lower() in str(e).lower():
+                df.columns.values[idx] = k
+                break
+
 def process_input(file_path):
     df = pd.read_excel(file_path)
     if 'Unnamed: 0' == df.columns[0] and 'x' in df.columns:
         df.drop(columns=['Unnamed: 0'], inplace=True)
         df.columns.values[0] = 'Mã XN'
+    if "x" in df.columns:
+        df.columns.values[0] = 'Mã XN'
+    
+    df.columns = df.columns.str
     if 'Tên xét nghiệm' in df.columns:
         df.drop(columns=['Tên xét nghiệm'], inplace=True)
-    
+    # print(df.head())
+    # print(df.columns)
     if 'Mã XN' not in df.columns:
         return None
-    df = df.set_index('Mã XN').transpose()
+    print(df.columns)
+    df = df.set_index(df.columns.values[0]).transpose()
     df = df.iloc[::-1]
+    
     if df.shape[0] == 0:
         return None
     
@@ -47,12 +63,15 @@ def process_input(file_path):
             if str(e) == '236':
                 df.columns.values[idx] = '233RDW-CV'
                 break
-
+    
+    process_header(df)
+    
     return df
 
 
 def handle_data(file_path):
     df = process_input(file_path)
+    
     if df is None:
         return None
     obj = pattern.copy()
@@ -64,8 +83,8 @@ def handle_data(file_path):
     have_beta = handle_label(df, beta_names, obj)
     have_alpha = handle_label(df, alpha_names, obj)
 
-    if not have_alpha or not have_beta:
-        return None
+    # if not have_alpha or not have_beta:
+    #     return None
 
     return obj.values()
 
@@ -101,20 +120,18 @@ def main(gl_path, csv_path):
         try:
             out = handle_data(file_path)
             if out is None:
-                # print(file_path)
+                print(file_path)
                 continue
             main_arr.append(out)
-        except:
-            print(file_path)
-    
+        except Exception as e:
+            print(f'error: {e}', file_path)
     df = pd.DataFrame(main_arr, columns=pattern.keys())
     df = post_process_data(df)
     df.to_csv(csv_path, index=False)
     
 
 if __name__ == "__main__":
-    # file_path = "/home/tupm/datasets/thalas/0504/Alpha/15003986.xls"
-    # handle_data(file_path)
-    names = '2704'
-    file_path = f"/home/tupm/datasets/thalas/{names}/*/*"
-    main(file_path, f'../datasets/{names}.csv')
+    names = '2804'
+    file_path = f"/home/tupm/datasets/thalas/{names}/*/13001139*"
+    # main(file_path, f'../datasets/{names}.csv')
+    main(file_path, f'/home/tupm/projects/thalassemia/datasets/test.csv')
