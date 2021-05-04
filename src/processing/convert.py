@@ -2,6 +2,7 @@ import enum
 import numpy as np
 import pandas as pd
 import os
+import unidecode
 from tqdm import tqdm
 from glob import glob
 from mapping import feature_names, alpha_names, beta_names, mp, pattern, basic_names, fe_names
@@ -19,7 +20,7 @@ def handle_label(df, l_names, obj):
     new_df = df
     intersection_columns = set(l_names) & set(new_df.columns)
     transpose_df = new_df[intersection_columns]
-    transpose_df = transpose_df.replace(regex='DƯƠNG', value=-2)
+    transpose_df = transpose_df.replace(regex='((Dương)|(Duong)|(DƯƠNG)|(duong)|(DUONG))+', value=-2)
     transpose_df = transpose_df.replace(regex='ÂM', value=-1)
     
     vl = transpose_df.replace(regex='x', value=np.nan).fillna(method='bfill').iloc[0].to_dict()
@@ -44,15 +45,14 @@ def process_input(file_path):
     if "x" in df.columns:
         df.columns.values[0] = 'Mã XN'
     
-    df.columns = df.columns.str
     if 'Tên xét nghiệm' in df.columns:
         df.drop(columns=['Tên xét nghiệm'], inplace=True)
-    # print(df.head())
-    # print(df.columns)
-    if 'Mã XN' not in df.columns:
+    
+    if 'Mã XN' != df.columns[0]:
         return None
-    print(df.columns)
-    df = df.set_index(df.columns.values[0]).transpose()
+
+    df.columns = df.columns.values
+    df = df.set_index(df.columns[0]).transpose()
     df = df.iloc[::-1]
     
     if df.shape[0] == 0:
@@ -131,7 +131,7 @@ def main(gl_path, csv_path):
     
 
 if __name__ == "__main__":
-    names = '2804'
-    file_path = f"/home/tupm/datasets/thalas/{names}/*/13001139*"
-    # main(file_path, f'../datasets/{names}.csv')
-    main(file_path, f'/home/tupm/projects/thalassemia/datasets/test.csv')
+    names = '2904'
+    file_path = f"/home/tupm/datasets/thalas/{names}/*/*"
+    main(file_path, f'/home/tupm/projects/thalassemia/datasets/{names}.csv')
+    # main(file_path, f'/home/tupm/projects/thalassemia/datasets/test.csv')
