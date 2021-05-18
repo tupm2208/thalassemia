@@ -1,8 +1,8 @@
 feature_names = ['750HbA1', '751HbA2', '752HbE', '753HbF']
 
-alpha_names = ['SEA', 'A32431', '3.7', 'A32428', '4.2', 'A32426', 'THAI', 'A32432', 'FIL', 'HbCS', 'A32427', 'HbQs', 'A32441', '2delT', 'A32429']
+alpha_names = ['SEA', 'A32431', '3.7', 'A32428', '4.2', 'A32426', 'THAI', 'A32432', 'FIL', 'HbCS', 'A32427', 'HbQs', 'A32441', '2delT', 'A32429', 'a2 cd', 'a1 cd']
 
-beta_names = ['-28', 'cd 27/28', 'CD28', 'cd15', 'cd 17', 'CD17', 'A32435', 'Co17', 'cd 19', 'cd 8/9', 'cd 26', 'CD26', 'Co26', 'A32433', '41/42', 'A32442', 'cd 43', '71/72', 'cd 95', 'CD95', 'cd121', 'IVS', 'A32440', '89/90', 'cd90', '-88', 'b-29', 'b-31']
+beta_names = ['-28', 'cd 27/28', 'CD28', 'cd15', 'cd 17', 'CD17', 'A32435', 'Co17', 'cd 19', 'cd 8/9', 'cd 26', 'CD26', 'Co26', 'A32433', '41/42', 'A32442', 'cd 43', '71/72', 'cd 95', 'CD95', 'cd121', 'IVS', 'A32440', '89/90', 'cd90', '-88', 'b-29', 'b-31', 'cd ', 'codon', 'thal -90']
 
 basic_names = ['PID', '223SLHC', '224HST', '225HCT', '226MCV', '227MCH', '228MCHC', '233RDW-CV', '234SLTC', '246SLBC']
 # basic_names = ['PID', '223SLHC', '224HST', '225HCT', '226MCV', '227MCH', '228MCHC', '236', '234SLTC', '246SLBC']

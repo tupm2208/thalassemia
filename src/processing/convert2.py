@@ -17,8 +17,10 @@ def process_line(source_path, des_path):
         for line in tqdm(lines):
             splited = line.split(',')
             out = splited[:5] + ['-'.join(splited[5:-5])] + splited[-5:]
-            
-            f2.write(','.join(out))
+            PID = out[1].strip()
+            out[1] = PID
+            if PID is not None and flag_dict.get(PID):
+                f2.write(','.join(out))
     f2.close()
     print("file converted!!!")
 
@@ -104,20 +106,22 @@ if __name__ == '__main__':
     from glob import glob
     import os
 
-    # file_paths = glob('datasets/OneDrive_1_5-10-2021/4. XN_PCR_Di truyền sinh học phân tử/*')
-    # for path in file_paths:
-    #     print(path)
-    #     inte_path = path.replace(".csv", '_modify.csv')
-    #     des_path = f'datasets/dien_di/{os.path.basename(path)}'
-    #     process_line(path, inte_path)
-    #     main(inte_path, des_path)
+    file_paths = glob('datasets/OneDrive_1_5-10-2021/4. XN_PCR_Di truyền sinh học phân tử/*')
+    for path in file_paths:
+        if 'modify' in path:
+            continue
+        print(path)
+        inte_path = path.replace(".csv", '_modify.csv')
+        des_path = f'datasets/dien_di/{os.path.basename(path)}'
+        # process_line(path, inte_path)
+        main(inte_path, des_path)
 
     # path = 'datasets/OneDrive_1_5-10-2021/2. XN_Sinh hóa máu/SINH HOA-VHH2013-2019.xlsx'
     # des_path = 'datasets/SINH_HOA'
     # main(path, des_path)
 
-    path = 'datasets/OneDrive_1_5-10-2021/1. XN_CBC_Tổng phân tích tế bào máu/TB.2015.csv'
-    inte_path = path.replace(".csv", '_modify.csv')
-    des_path = 'datasets/TBM/TB.2015.csv'
-    process_line(path, inte_path)
-    main(inte_path, des_path)
+    # path = 'datasets/OneDrive_1_5-10-2021/1. XN_CBC_Tổng phân tích tế bào máu/TB.2015.csv'
+    # inte_path = path.replace(".csv", '_modify.csv')
+    # des_path = 'datasets/TBM/TB.2015.csv'
+    # process_line(path, inte_path)
+    # main(inte_path, des_path)
