@@ -42,7 +42,7 @@ def process_csv(source_path):
     df = pd.DataFrame(arr, columns=columns)
     # df.set_index('PID', inplace=True)
     df = df.assign(Testcode=df.Testcode.str.strip())
-    pattern = {e: None for e in df.Testcode.unique()}
+    pattern = {e: None for e in df['Testcode'].unique()}
     return df
 
 def handle_group(ex_df):
@@ -53,6 +53,7 @@ def handle_group(ex_df):
     df2.apply(pd.to_numeric, errors='coerce', downcast='float')
     # df2.dropna(inplace=True)
     m = 0
+    # sub_df: 4, sub_df2: 6, sub_df3:3
     selected_df = None
     for date, sub_df in df2.groupby('indate'):
         if m <= sub_df.shape[0]:

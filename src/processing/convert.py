@@ -131,7 +131,8 @@ def main(gl_path, csv_path):
     
 
 if __name__ == "__main__":
-    names = '2904'
-    file_path = f"/home/tupm/datasets/thalas/{names}/*/*"
-    main(file_path, f'/home/tupm/projects/thalassemia/datasets/{names}.csv')
+    # names = '2904'
+    # file_path = f"/home/tupm/datasets/thalas/{names}/*/*"
+    file_path = "../datasraw_thalasets/raw_thalas/*"
+    main(file_path, "../datasets/raw_thalas/thalas.csv")
     # main(file_path, f'/home/tupm/projects/thalassemia/datasets/test.csv')

@@ -15,19 +15,23 @@ from sklearn.neighbors import KNeighborsClassifier
 
 
 numerical_columns = ["SLHC","HST","HCT","MCV","MCH","MCHC","RDWCV","SLTC","SLBC"]
-# numerical_columns = ["FERRITIN","FE"]
-numerical_columns = ["SLHC","HST","HCT","MCV","MCH","MCHC","RDWCV","SLTC","SLBC","FERRITIN","FE"]
+numerical_columns = ["FERRITIN","FE"]
+# numerical_columns = ["SLHC","HST","HCT","MCV","MCH","MCHC","RDWCV","SLTC","SLBC","FERRITIN","FE"]
 # numerical_columns = ["SLHC","HST","HCT","MCV","MCH","MCHC","RDWCV","SLTC","SLBC","FERRITIN","FE", "HBA1", "HBA2"]
-# numerical_columns = ["FERRITIN","FE", "HBA1", "HBA2"]
+numerical_columns = ["FERRITIN","FE", "HBA1", "HBA2"]
+numerical_columns = ["HBA1", "HBA2"]
 # categorical_columns = ['sex']
 categorical_columns = []
+threshold = 0.5
+model_name = 'model_hba'
 
 def read_main_data(file_path = 'datasets/splited_train_test.csv'):
     global numerical_columns
 
     df = pd.read_csv(file_path, low_memory=False)
     df.drop_duplicates(subset=['PID'], keep='last', inplace=True)
-    # df = df[~(df.sheet.isin(['d1']) & (df.thalas == 0)& (df.train == 1))]
+    # df = df[~(df.sheet.isin(['d1']) & (df.thalas == 0) & (df.train == 1))]
+    df = df[~(df.sheet.isin(['d1']) & (df.thalas == 0))]
     # df1 = df[~df.sheet2.isin(['normal'])]
     # df2 = df[df.sheet2.isin(['normal'])]
     # df = pd.concat([df1, df2.iloc[:2000]])
@@ -113,7 +117,7 @@ def balance_data(df, type='under'):
 
 
 def evaluate(model, df, desc=''):
-    global numerical_columns
+    global numerical_columns, threshold
     
     X = process_features(df)
     y = df['thalas']
@@ -121,7 +125,7 @@ def evaluate(model, df, desc=''):
     preds = np.array(model.predict(X))
     print('---------------------------------------------------')
     print(f"evaluation results {desc}:\n")
-    print(classification_report(y, np.where(preds>=0.6, 1, 0)))
+    print(classification_report(y, np.where(preds>=threshold, 1, 0)))
     print('---------------------------------------------------')
 
     # mask = preds != y
@@ -153,6 +157,7 @@ def fit_model(model, df):
 
 
 def main():
+    global model_name
     train_df, test_df = read_main_data()
 
     # model = xgb.XGBClassifier(learning_rate=0.1, max_depth=15, n_estimators=100, n_jobs=-1, random_state=42,use_label_encoder=False, objective="binary:logistic")
@@ -167,9 +172,9 @@ def main():
     # model = KNeighborsClassifier(n_neighbors=4)
 
     # svm_model = svm.SVC(C=200,kernel='rbf', probability=True)
-    # xg = xgb.XGBClassifier(learning_rate=0.1, max_depth=15, n_estimators=100, n_jobs=-1, random_state=42)
-    # rf = RandomForestClassifier(n_estimators = 100, random_state=42, criterion='entropy', n_jobs=8)
-    # nb = GaussianNB()
+    xg = xgb.XGBClassifier(learning_rate=0.1, max_depth=15, n_estimators=100, n_jobs=-1, random_state=42)
+    rf = RandomForestClassifier(n_estimators = 100, random_state=42, criterion='entropy', n_jobs=8)
+    nb = GaussianNB()
     # model = VotingClassifier(estimators=[('rf', rf), ('nb', nb), ('xg', xg)], voting='soft')
     # model = VotingClassifier(estimators=[('rf', rf), ('xg', xg)], voting='soft')
 
@@ -180,7 +185,7 @@ def main():
     evaluate(model, test_df, 'main_test')
     evaluate(model, train_df, 'main_test')
     import pickle
-    with open('models/model_fe.pkl', 'wb') as f:
+    with open(f'models/{model_name}.pkl', 'wb') as f:
         pickle.dump(model, f)
 
 if __name__ == '__main__':
